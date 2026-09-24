@@ -28,7 +28,29 @@ playwright install --with-deps chromium
 uvicorn app.main:app --reload
 ```
 
+Playground: `http://localhost:8000/playground`
+
 Swagger: `http://localhost:8000/docs`
+
+
+## Playground web
+
+A interface de testes está disponível em `/playground` (e a rota `/` redireciona para ela). Ela permite montar e executar chamadas sem precisar de Postman ou cURL.
+
+Recursos da interface:
+
+- URL e API key.
+- Modos `auto`, `http` e `browser`.
+- Controle de `render_js`, `wait_until`, timeout, delay e retries.
+- Seletor CSS para aguardar conteúdo dinâmico.
+- Proxy por requisição, inclusive usuário/senha e bypass.
+- Headers e cookies em JSON.
+- User-Agent, locale e timezone.
+- Abas para JSON completo, HTML bruto, dados de produto e payload enviado.
+- Status HTTP, modo realmente usado e tempo da requisição.
+- Botão para copiar a saída.
+
+A API key digitada no playground é usada somente no header `X-API-Key` da requisição feita pelo navegador e não é gravada pelo frontend.
 
 ## Exemplo simples
 

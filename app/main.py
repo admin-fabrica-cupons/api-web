@@ -6,12 +6,13 @@ from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
 from .config import get_settings
 from .extractor import extract_page_data
 from .fetcher import browser_manager, fetch
 from .models import FetchResult, ScrapeRequest
+from .playground import PLAYGROUND_HTML
 from .security import require_api_key
 
 
@@ -36,7 +37,7 @@ app = FastAPI(
 
 @app.middleware("http")
 async def rate_limit(request: Request, call_next):
-    if request.url.path in {"/health", "/docs", "/openapi.json", "/redoc"}:
+    if request.url.path in {"/", "/health", "/playground", "/docs", "/openapi.json", "/redoc"}:
         return await call_next(request)
 
     key = request.headers.get("x-api-key") or (request.client.host if request.client else "unknown")
@@ -51,6 +52,16 @@ async def rate_limit(request: Request, call_next):
         bucket.append(now)
 
     return await call_next(request)
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/playground", status_code=307)
+
+
+@app.get("/playground", response_class=HTMLResponse, include_in_schema=False)
+async def playground():
+    return HTMLResponse(content=PLAYGROUND_HTML)
 
 
 @app.get("/health")
