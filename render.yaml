@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: product-scraper-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: API_KEY
+        generateValue: true
+      - key: REQUEST_TIMEOUT_MS
+        value: "30000"
+      - key: BROWSER_TIMEOUT_MS
+        value: "35000"
+      - key: MAX_RESPONSE_BYTES
+        value: "5000000"
+      - key: MAX_BROWSER_CONCURRENCY
+        value: "1"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "30"
